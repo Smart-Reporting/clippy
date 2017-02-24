@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Clippy Demo Page</title>
+</head>
+<body>
+    <input type="text" id="text"> <br>
+    <button>Copy some text</button>
+<script src="../dist/clippy.js"></script>
+<script>
+    function beforeCopy() {
+        return {html: "<b>Hallo1234</b>", text: document.getElementById("text").value};
+    }
+
+    var c = new Clipboard();
+
+    document.querySelector("button").onclick = c.makeCopyHandler({
+        beforeCopy: beforeCopy});
+</script>
+</body>
+</html>
