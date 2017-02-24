@@ -1,4 +1,4 @@
-class Clipboard {
+export class Clipboard {
     private static container: Element = null;
 
     constructor() {
@@ -64,5 +64,3 @@ class Clipboard {
         return this.copyHandler.bind(this, options);
     }
 }
-
-//export const c = Clipboard.instance;
