@@ -1,8 +1,8 @@
-export class Clipboard {
+export class Clippy {
     private static container: Element = null;
 
     constructor() {
-        if (!Clipboard.container) {
+        if (!Clippy.container) {
             const container = document.createElement('div');
             container.setAttribute("id", "clipboard_hidden_text");
             container.style.position = "fixed";
@@ -11,7 +11,7 @@ export class Clipboard {
             container.style.top = "-10px";
             container.style.left = "-10px";
             container.style.overflow = "hidden";
-            Clipboard.container = <Element>document.body.appendChild(container);
+            Clippy.container = <Element>document.body.appendChild(container);
         }
     }
 
@@ -25,7 +25,7 @@ export class Clipboard {
 
         let {text, html} = options.beforeCopy();
 
-        document.addEventListener('copy', (e: ClipboardEvent) => {
+        Clippy.container.addEventListener('copy', (e: ClipboardEvent) => {
             if (!!text) {
                 e.clipboardData.setData("text/plain", text);
             }
@@ -41,12 +41,12 @@ export class Clipboard {
             e.preventDefault();
         });
 
-        Clipboard.container.innerHTML = text;
+        Clippy.container.innerHTML = text;
         const selection = window.getSelection();
         selection.removeAllRanges();
 
         const range = document.createRange();
-        range.selectNode(Clipboard.container);
+        range.selectNode(Clippy.container);
         selection.addRange(range);
 
         try {

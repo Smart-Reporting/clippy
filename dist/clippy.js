@@ -7,9 +7,9 @@
     }
 })(["require", "exports"], function (require, exports) {
     "use strict";
-    var Clipboard = (function () {
-        function Clipboard() {
-            if (!Clipboard.container) {
+    var Clippy = (function () {
+        function Clippy() {
+            if (!Clippy.container) {
                 var container = document.createElement('div');
                 container.setAttribute("id", "clipboard_hidden_text");
                 container.style.position = "fixed";
@@ -18,15 +18,15 @@
                 container.style.top = "-10px";
                 container.style.left = "-10px";
                 container.style.overflow = "hidden";
-                Clipboard.container = document.body.appendChild(container);
+                Clippy.container = document.body.appendChild(container);
             }
         }
-        Clipboard.prototype.copyHandler = function (options) {
+        Clippy.prototype.copyHandler = function (options) {
             if (options.onError != undefined && !document.queryCommandEnabled("copy")) {
                 options.onError("copy command not supported or enabled");
             }
             var _a = options.beforeCopy(), text = _a.text, html = _a.html;
-            document.addEventListener('copy', function (e) {
+            Clippy.container.addEventListener('copy', function (e) {
                 if (!!text) {
                     e.clipboardData.setData("text/plain", text);
                 }
@@ -38,11 +38,11 @@
                 }
                 e.preventDefault();
             });
-            Clipboard.container.innerHTML = text;
+            Clippy.container.innerHTML = text;
             var selection = window.getSelection();
             selection.removeAllRanges();
             var range = document.createRange();
-            range.selectNode(Clipboard.container);
+            range.selectNode(Clippy.container);
             selection.addRange(range);
             try {
                 document.execCommand('copy');
@@ -54,11 +54,11 @@
             }
             selection.removeAllRanges();
         };
-        Clipboard.prototype.makeCopyHandler = function (options) {
+        Clippy.prototype.makeCopyHandler = function (options) {
             return this.copyHandler.bind(this, options);
         };
-        return Clipboard;
+        return Clippy;
     }());
-    Clipboard.container = null;
-    exports.Clipboard = Clipboard;
+    Clippy.container = null;
+    exports.Clippy = Clippy;
 });
