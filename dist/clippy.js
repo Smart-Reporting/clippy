@@ -21,13 +21,13 @@
                 container.style.left = "-10px";
                 container.style.overflow = "hidden";
                 Clippy.container = document.body.appendChild(container);
-                var _a = this.options.beforeCopy(), text_1 = _a.text, html_1 = _a.html;
                 Clippy.container.addEventListener('copy', function (e) {
-                    if (!!text_1) {
-                        e.clipboardData.setData("text/plain", text_1);
+                    var _a = _this.options.beforeCopy(), text = _a.text, html = _a.html;
+                    if (!!text) {
+                        e.clipboardData.setData("text/plain", text);
                     }
-                    if (!!html_1) {
-                        e.clipboardData.setData("text/html", html_1);
+                    if (!!html) {
+                        e.clipboardData.setData("text/html", html);
                     }
                     if (!!_this.options.afterCopy) {
                         _this.options.afterCopy();

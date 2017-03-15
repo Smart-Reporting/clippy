@@ -16,9 +16,9 @@ export class Clippy {
             container.style.overflow = "hidden";
             Clippy.container = <Element>document.body.appendChild(container);
 
-            let {text, html} = this.options.beforeCopy();
-
             Clippy.container.addEventListener('copy', (e: ClipboardEvent) => {
+                let {text, html} = this.options.beforeCopy();
+
                 if (!!text) {
                     e.clipboardData.setData("text/plain", text);
                 }
