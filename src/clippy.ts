@@ -26,8 +26,6 @@ export class Clippy {
         let {text, html} = options.beforeCopy();
 
         const copyEventHandler = (e: ClipboardEvent) => {
-            let {text, html} = options.beforeCopy();
-
             if (!!text) {
                 e.clipboardData.setData("text/plain", text);
             }

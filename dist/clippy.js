@@ -27,7 +27,6 @@
             }
             var _a = options.beforeCopy(), text = _a.text, html = _a.html;
             var copyEventHandler = function (e) {
-                var _a = options.beforeCopy(), text = _a.text, html = _a.html;
                 if (!!text) {
                     e.clipboardData.setData("text/plain", text);
                 }
