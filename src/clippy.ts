@@ -2,7 +2,6 @@ export type options = {beforeCopy: () => {text?: string, html?: string}, onError
 
 export class Clippy {
     private static container: Element = null;
-    private options:options = null;
 
     constructor() {
         if (!Clippy.container) {
@@ -15,37 +14,36 @@ export class Clippy {
             container.style.left = "-10px";
             container.style.overflow = "hidden";
             Clippy.container = <Element>document.body.appendChild(container);
-
-            Clippy.container.addEventListener('copy', (e: ClipboardEvent) => {
-                let {text, html} = this.options.beforeCopy();
-
-                if (!!text) {
-                    e.clipboardData.setData("text/plain", text);
-                }
-
-                if (!!html) {
-                    e.clipboardData.setData("text/html", html);
-                }
-
-                if (!!this.options.afterCopy) {
-                    this.options.afterCopy();
-                }
-
-                e.preventDefault();
-            });
         }
     }
 
-    private copyHandler(options: {
-        beforeCopy: () => {text?: string, html?: string},
-        onError?: (message: string | Error) => void, afterCopy?: () => void}) {
+    private copyHandler(options: options) {
 
         if (options.onError != undefined && !document.queryCommandSupported("copy")) {
             options.onError("Copy command not supported");
         }
 
-        this.options = options;
-        let {text, } = options.beforeCopy();
+        let {text, html} = options.beforeCopy();
+
+        const copyEventHandler = (e: ClipboardEvent) => {
+            let {text, html} = options.beforeCopy();
+
+            if (!!text) {
+                e.clipboardData.setData("text/plain", text);
+            }
+
+            if (!!html) {
+                e.clipboardData.setData("text/html", html);
+            }
+
+            if (!!options.afterCopy) {
+                options.afterCopy();
+            }
+
+            e.preventDefault();
+        };
+
+        Clippy.container.addEventListener('copy', copyEventHandler);
 
         Clippy.container.innerHTML = text;
         const selection = window.getSelection();
@@ -54,8 +52,6 @@ export class Clippy {
         const range = document.createRange();
         range.selectNode(Clippy.container);
         selection.addRange(range);
-
-
 
         try {
             const success = document.execCommand('copy');
@@ -67,6 +63,8 @@ export class Clippy {
                 options.onError(e)
             }
         }
+
+        Clippy.container.removeEventListener('copy', copyEventHandler);
 
         selection.removeAllRanges();
     }

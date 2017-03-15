@@ -9,8 +9,6 @@
     "use strict";
     var Clippy = (function () {
         function Clippy() {
-            var _this = this;
-            this.options = null;
             if (!Clippy.container) {
                 var container = document.createElement('div');
                 container.setAttribute("id", "clipboard_hidden_text");
@@ -21,27 +19,27 @@
                 container.style.left = "-10px";
                 container.style.overflow = "hidden";
                 Clippy.container = document.body.appendChild(container);
-                Clippy.container.addEventListener('copy', function (e) {
-                    var _a = _this.options.beforeCopy(), text = _a.text, html = _a.html;
-                    if (!!text) {
-                        e.clipboardData.setData("text/plain", text);
-                    }
-                    if (!!html) {
-                        e.clipboardData.setData("text/html", html);
-                    }
-                    if (!!_this.options.afterCopy) {
-                        _this.options.afterCopy();
-                    }
-                    e.preventDefault();
-                });
             }
         }
         Clippy.prototype.copyHandler = function (options) {
             if (options.onError != undefined && !document.queryCommandSupported("copy")) {
                 options.onError("Copy command not supported");
             }
-            this.options = options;
-            var text = options.beforeCopy().text;
+            var _a = options.beforeCopy(), text = _a.text, html = _a.html;
+            var copyEventHandler = function (e) {
+                var _a = options.beforeCopy(), text = _a.text, html = _a.html;
+                if (!!text) {
+                    e.clipboardData.setData("text/plain", text);
+                }
+                if (!!html) {
+                    e.clipboardData.setData("text/html", html);
+                }
+                if (!!options.afterCopy) {
+                    options.afterCopy();
+                }
+                e.preventDefault();
+            };
+            Clippy.container.addEventListener('copy', copyEventHandler);
             Clippy.container.innerHTML = text;
             var selection = window.getSelection();
             selection.removeAllRanges();
@@ -59,6 +57,7 @@
                     options.onError(e);
                 }
             }
+            Clippy.container.removeEventListener('copy', copyEventHandler);
             selection.removeAllRanges();
         };
         Clippy.prototype.makeCopyHandler = function (options) {
