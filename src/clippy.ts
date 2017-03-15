@@ -1,5 +1,8 @@
+export type options = {beforeCopy: () => {text?: string, html?: string}, onError?: (message: string | Error) => void, afterCopy?: () => void};
+
 export class Clippy {
     private static container: Element = null;
+    private options:options = null;
 
     constructor() {
         if (!Clippy.container) {
@@ -12,6 +15,24 @@ export class Clippy {
             container.style.left = "-10px";
             container.style.overflow = "hidden";
             Clippy.container = <Element>document.body.appendChild(container);
+
+            let {text, html} = this.options.beforeCopy();
+
+            Clippy.container.addEventListener('copy', (e: ClipboardEvent) => {
+                if (!!text) {
+                    e.clipboardData.setData("text/plain", text);
+                }
+
+                if (!!html) {
+                    e.clipboardData.setData("text/html", html);
+                }
+
+                if (!!this.options.afterCopy) {
+                    this.options.afterCopy();
+                }
+
+                e.preventDefault();
+            });
         }
     }
 
@@ -19,27 +40,12 @@ export class Clippy {
         beforeCopy: () => {text?: string, html?: string},
         onError?: (message: string | Error) => void, afterCopy?: () => void}) {
 
-        if (options.onError != undefined && !document.queryCommandEnabled("copy")) {
-            options.onError("copy command not supported or enabled");
+        if (options.onError != undefined && !document.queryCommandSupported("copy")) {
+            options.onError("Copy command not supported");
         }
 
-        let {text, html} = options.beforeCopy();
-
-        Clippy.container.addEventListener('copy', (e: ClipboardEvent) => {
-            if (!!text) {
-                e.clipboardData.setData("text/plain", text);
-            }
-
-            if (!!html) {
-                e.clipboardData.setData("text/html", html);
-            }
-
-            if (!!options.afterCopy) {
-                options.afterCopy();
-            }
-
-            e.preventDefault();
-        });
+        this.options = options;
+        let {text, } = options.beforeCopy();
 
         Clippy.container.innerHTML = text;
         const selection = window.getSelection();
@@ -49,8 +55,13 @@ export class Clippy {
         range.selectNode(Clippy.container);
         selection.addRange(range);
 
+
+
         try {
-            document.execCommand('copy');
+            const success = document.execCommand('copy');
+            if (!!success && !!options.onError) {
+                options.onError("Copy command not enabled");
+            }
         } catch(e) {
             if (!!options.onError) {
                 options.onError(e)
@@ -60,7 +71,7 @@ export class Clippy {
         selection.removeAllRanges();
     }
 
-    public makeCopyHandler(options: {beforeCopy: () => {text?: string, html?: string}, onError?: (message: string | Error) => void, afterCopy?: () => void}) {
+    public makeCopyHandler(options: options) {
         return this.copyHandler.bind(this, options);
     }
 }

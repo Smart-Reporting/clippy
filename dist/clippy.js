@@ -9,6 +9,8 @@
     "use strict";
     var Clippy = (function () {
         function Clippy() {
+            var _this = this;
+            this.options = null;
             if (!Clippy.container) {
                 var container = document.createElement('div');
                 container.setAttribute("id", "clipboard_hidden_text");
@@ -19,25 +21,27 @@
                 container.style.left = "-10px";
                 container.style.overflow = "hidden";
                 Clippy.container = document.body.appendChild(container);
+                var _a = this.options.beforeCopy(), text_1 = _a.text, html_1 = _a.html;
+                Clippy.container.addEventListener('copy', function (e) {
+                    if (!!text_1) {
+                        e.clipboardData.setData("text/plain", text_1);
+                    }
+                    if (!!html_1) {
+                        e.clipboardData.setData("text/html", html_1);
+                    }
+                    if (!!_this.options.afterCopy) {
+                        _this.options.afterCopy();
+                    }
+                    e.preventDefault();
+                });
             }
         }
         Clippy.prototype.copyHandler = function (options) {
-            if (options.onError != undefined && !document.queryCommandEnabled("copy")) {
-                options.onError("copy command not supported or enabled");
+            if (options.onError != undefined && !document.queryCommandSupported("copy")) {
+                options.onError("Copy command not supported");
             }
-            var _a = options.beforeCopy(), text = _a.text, html = _a.html;
-            Clippy.container.addEventListener('copy', function (e) {
-                if (!!text) {
-                    e.clipboardData.setData("text/plain", text);
-                }
-                if (!!html) {
-                    e.clipboardData.setData("text/html", html);
-                }
-                if (!!options.afterCopy) {
-                    options.afterCopy();
-                }
-                e.preventDefault();
-            });
+            this.options = options;
+            var text = options.beforeCopy().text;
             Clippy.container.innerHTML = text;
             var selection = window.getSelection();
             selection.removeAllRanges();
@@ -45,7 +49,10 @@
             range.selectNode(Clippy.container);
             selection.addRange(range);
             try {
-                document.execCommand('copy');
+                var success = document.execCommand('copy');
+                if (!!success && !!options.onError) {
+                    options.onError("Copy command not enabled");
+                }
             }
             catch (e) {
                 if (!!options.onError) {
