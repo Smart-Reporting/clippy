@@ -55,7 +55,7 @@ export class Clippy {
 
         try {
             const success = document.execCommand('copy');
-            if (!!success && !!options.onError) {
+            if (!success && !!options.onError) {
                 options.onError("Copy command not enabled");
             }
         } catch(e) {

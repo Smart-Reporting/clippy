@@ -48,7 +48,7 @@
             selection.addRange(range);
             try {
                 var success = document.execCommand('copy');
-                if (!!success && !!options.onError) {
+                if (!success && !!options.onError) {
                     options.onError("Copy command not enabled");
                 }
             }
