@@ -3,9 +3,11 @@
     "module": "umd",
     "target": "es5",
     "sourceMap": false,
-    "outDir": "dist/"
+    "outDir": "dist/",
+    "declaration": true
   },
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "./dist"
   ]
 }

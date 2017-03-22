@@ -27,6 +27,7 @@
             }
             var _a = options.beforeCopy(), text = _a.text, html = _a.html;
             var copyEventHandler = function (e) {
+                e.preventDefault();
                 if (!!text) {
                     e.clipboardData.setData("text/plain", text);
                 }
@@ -36,7 +37,6 @@
                 if (!!options.afterCopy) {
                     options.afterCopy();
                 }
-                e.preventDefault();
             };
             Clippy.container.addEventListener('copy', copyEventHandler);
             Clippy.container.innerHTML = text;
