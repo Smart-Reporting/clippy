@@ -1,5 +1,6 @@
 define(["require", "exports"], function (require, exports) {
     "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
     var Clippy = (function () {
         function Clippy() {
             if (!Clippy.container) {
@@ -27,9 +28,6 @@ define(["require", "exports"], function (require, exports) {
                 if (!!html) {
                     e.clipboardData.setData("text/html", html);
                 }
-                if (!!options.afterCopy) {
-                    options.afterCopy();
-                }
             };
             Clippy.container.addEventListener('copy', copyEventHandler);
             Clippy.container.innerHTML = text;
@@ -40,6 +38,9 @@ define(["require", "exports"], function (require, exports) {
             selection.addRange(range);
             try {
                 var success = document.execCommand('copy');
+                if (success && typeof options.afterCopy === 'function') {
+                    options.afterCopy();
+                }
                 if (!success && !!options.onError) {
                     options.onError("Copy command not enabled");
                 }

@@ -35,10 +35,6 @@ export class Clippy {
             if (!!html) {
                 e.clipboardData.setData("text/html", html);
             }
-
-            if (!!options.afterCopy) {
-                options.afterCopy();
-            }
         };
 
         Clippy.container.addEventListener('copy', copyEventHandler);
@@ -53,6 +49,9 @@ export class Clippy {
 
         try {
             const success = document.execCommand('copy');
+            if (success && typeof options.afterCopy === 'function') {
+                options.afterCopy();
+            }
             if (!success && !!options.onError) {
                 options.onError("Copy command not enabled");
             }
