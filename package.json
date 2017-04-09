@@ -1,4 +1,6 @@
 {
   "name": "clippy",
+  "main": "./dist/clippy.js",
+  "typings": "./dist/clippy.d.ts",
   "version": "0.1.1"
 }
