@@ -30,7 +30,7 @@ define(["require", "exports"], function (require, exports) {
                 }
             };
             Clippy.container.addEventListener('copy', copyEventHandler);
-            Clippy.container.innerHTML = text;
+            Clippy.container.innerHTML = html;
             var selection = window.getSelection();
             selection.removeAllRanges();
             var range = document.createRange();

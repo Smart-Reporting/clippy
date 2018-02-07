@@ -39,7 +39,7 @@ export class Clippy {
 
         Clippy.container.addEventListener('copy', copyEventHandler);
 
-        Clippy.container.innerHTML = text;
+        Clippy.container.innerHTML = html;
         const selection = window.getSelection();
         selection.removeAllRanges();
 
