@@ -1,7 +1,7 @@
 define(["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    var Clippy = (function () {
+    var Clippy = /** @class */ (function () {
         function Clippy() {
             if (!Clippy.container) {
                 var container = document.createElement('div');
@@ -30,7 +30,7 @@ define(["require", "exports"], function (require, exports) {
                 }
             };
             Clippy.container.addEventListener('copy', copyEventHandler);
-            Clippy.container.innerHTML = text;
+            Clippy.container.innerHTML = html;
             var selection = window.getSelection();
             selection.removeAllRanges();
             var range = document.createRange();
@@ -56,8 +56,8 @@ define(["require", "exports"], function (require, exports) {
         Clippy.prototype.makeCopyHandler = function (options) {
             return this.copyHandler.bind(this, options);
         };
+        Clippy.container = null;
         return Clippy;
     }());
-    Clippy.container = null;
     exports.Clippy = Clippy;
 });
