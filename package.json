@@ -2,12 +2,13 @@
   "name": "@smartreporting/clippy",
   "main": "./dist/clippy.js",
   "typings": "./dist/clippy.d.ts",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "devDependencies": {
     "typescript": "^2.7.1"
   },
   "scripts": {
     "build": "tsc",
     "prepare": "tsc"
-  }
+  },
+  "private": false
 }
